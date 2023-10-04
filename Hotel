@@ -1,0 +1,83 @@
+class Habitacion:
+    def __init__(self, numero):
+        self.numero = numero
+        self.estado = "Disponible"
+        self.huesped = None
+
+class Nodo:
+    def __init__(self, habitacion):
+        self.habitacion = habitacion
+        self.siguiente = None
+
+class ListaEnlazada:
+    def __init__(self):
+        self.inicio = None
+
+    def agregar_habitacion(self, habitacion):
+        nuevo_nodo = Nodo(habitacion)
+        if not self.inicio:
+            self.inicio = nuevo_nodo
+        else:
+            actual = self.inicio
+            while actual.siguiente:
+                actual = actual.siguiente
+            actual.siguiente = nuevo_nodo
+
+    def consultar_huesped_por_cedula(self, cedula):
+        actual = self.inicio
+        while actual:
+            if actual.habitacion.estado == "Ocupada" and actual.habitacion.huesped["cedula"] == cedula:
+                return actual.habitacion.huesped
+            actual = actual.siguiente
+        return None
+
+    def consultar_habitaciones_disponibles(self):
+        disponibles = []
+        actual = self.inicio
+        while actual:
+            if actual.habitacion.estado == "Disponible":
+                disponibles.append(actual.habitacion.numero)
+            actual = actual.siguiente
+        return disponibles
+
+    def consultar_habitaciones_ocupadas(self):
+        ocupadas = []
+        actual = self.inicio
+        while actual:
+            if actual.habitacion.estado == "Ocupada":
+                ocupadas.append(actual.habitacion.numero)
+            actual = actual.siguiente
+        return ocupadas
+
+    def consultar_huespedes_por_orden_llegada(self):
+        huespedes = []
+        actual = self.inicio
+        while actual:
+            if actual.habitacion.estado == "Ocupada":
+                huespedes.append(actual.habitacion.huesped)
+            actual = actual.siguiente
+        return huespedes
+
+if __name__ == "__main__":
+    lista_habitaciones = ListaEnlazada()
+    
+    lista_habitaciones.agregar_habitacion(Habitacion(101))
+    lista_habitaciones.agregar_habitacion(Habitacion(102))
+    lista_habitaciones.agregar_habitacion(Habitacion(103))
+
+    habitacion101 = lista_habitaciones.inicio
+    habitacion101.habitacion.estado = "Ocupada"
+    habitacion101.habitacion.huesped = {"nombre": "Juan", "cedula": "12345"}
+
+    habitacion102 = habitacion101.siguiente
+    habitacion102.habitacion.estado = "Ocupada"
+    habitacion102.habitacion.huesped = {"nombre": "María", "cedula": "67890"}
+
+    habitacion103 = habitacion102.siguiente
+    habitacion103.habitacion.estado = "Ocupada"
+    habitacion103.habitacion.huesped = {"nombre": "Pedro", "cedula": "11111"}
+
+    print("Huesped por cédula 12345:", lista_habitaciones.consultar_huesped_por_cedula("12345"))
+    print("Habitaciones disponibles:", lista_habitaciones.consultar_habitaciones_disponibles())
+    print("Habitaciones ocupadas:", lista_habitaciones.consultar_habitaciones_ocupadas())
+    print("Huespedes por orden de llegada:", lista_habitaciones.consultar_huespedes_por_orden_llegada())
